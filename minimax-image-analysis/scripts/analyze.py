@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-MiniMax 图片分析 Skill
-使用 MiniMax Token Plan API 进行图片理解和 OCR
+⚠️  安全说明: API Key 通过环境变量传入
+使用前请设置: export MINIMAX_API_KEY=your_actual_key
+或创建 .env 文件（不要提交到git）
+"""
 
-用法:
-    python analyze.py "图片路径或URL" "分析提示词"
-    python analyze.py "图片路径或URL"
-    python analyze.py --image "图片路径" --prompt "分析提示词"
-"""
 
 import json
 import urllib.request
@@ -19,7 +17,7 @@ import base64
 import re
 
 # ============== 配置 ==============
-API_KEY = "sk-cp-BC0OPAa8Y5HiiKOIHZpC4WRiBF3PEeGXDl2WgAaG7mRI7WHsGXhMdQWXErRKZvrNu6gH_iH-tTMjQsozFC_akhP9VOPJSxh1gMzb-P2KchmzTXBRGjZWBbY"
+API_KEY = os.environ.get("MINIMAX_API_KEY", "your_api_key_here")
 API_HOST = "https://api.minimaxi.com"
 ENDPOINT = "/v1/coding_plan/vlm"
 
