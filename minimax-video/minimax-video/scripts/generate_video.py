@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-MiniMax Video Generation Script - 简化版
-通过 MiniMax API 生成视频
+⚠️  安全说明: API Key 通过环境变量传入
+使用前请设置: export MINIMAX_API_KEY=your_actual_key
+或创建 .env 文件（不要提交到git）
+"""
 
-用法:
-    python generate_video.py --prompt "视频描述"
-    python generate_video.py --prompt "描述" --duration 10 --resolution 1080p
-"""
 
 import urllib.request
 import urllib.error
@@ -18,7 +17,7 @@ import argparse
 
 
 # ============== 配置 ==============
-API_KEY = "sk-cp-BC0OPAa8Y5HiiKOIHZpC4WRiBF3PEeGXDl2WgAaG7mRI7WHsGXhMdQWXErRKZvrNu6gH_iH-tTMjQsozFC_akhP9VOPJSxh1gMzb-P2KchmzTXBRGjZWBbY"
+API_KEY = os.environ.get("MINIMAX_API_KEY", "your_api_key_here")
 API_HOST = "https://api.minimaxi.com"
 ENDPOINT = "/v1/video_generation"
 QUERY_ENDPOINT = "/v1/query/video_generation"
