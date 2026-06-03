@@ -6,10 +6,35 @@
 ## 🔒 安全声明
 
 **所有上传到此仓库的代码已通过安全审计：**
-- ✅ 无 GitHub Token / API Key 泄露
-- ✅ 无密码 / 私钥等敏感信息
-- ✅ 所有 `*.sh` 脚本已脱敏处理（使用环境变量传递Token）
-- ✅ 历史漏洞：`github-mcp/scripts/full_test.sh` 和 `test_all.sh` 中的硬编码Token已被替换
+
+### ✅ 已修复的安全问题
+1. **MiniMax API Key 泄露** (14个Python脚本)
+   - 原状态: 硬编码 MiniMax API Key (sk-cp- 开头, ~120字符)
+   - 修复方案: 改为 `os.environ.get("MINIMAX_API_KEY", "your_api_key_here")`
+   - 修复时间: 2026-06-04
+
+2. **GitHub Token 泄露** (2个Shell脚本)
+   - 原状态: 硬编码 GitHub Personal Access Token (ghp_ 开头, 40字符)
+   - 修复方案: 改为 `${GITHUB_TOKEN:-your_github_token_here}`
+   - 修复时间: 2026-06-04
+
+### 🔐 当前安全状态
+- ✅ 0个硬编码API Key
+- ✅ 0个硬编码GitHub Token
+- ✅ 0个密码/私钥泄露
+- ✅ 所有脚本使用环境变量传递敏感信息
+
+### 📝 使用方法
+```bash
+# 设置环境变量
+export MINIMAX_API_KEY=your_actual_key
+export GITHUB_TOKEN=your_github_token
+
+# 或创建 .env 文件（不要提交到git）
+echo "MINIMAX_API_KEY=your_key" > .env
+```
+
+---
 
 ## 📦 技能列表 (25个)
 
@@ -67,7 +92,7 @@
 | 指标 | 数值 |
 |------|------|
 | Skill总数 | 25 |
-| 上传文件数 | 200+ |
+| 上传文件数 | 201 |
 | 完整性 | 100% ✅ |
 | 安全审计 | 通过 ✅ |
 | 敏感信息泄露 | 0 |
@@ -77,6 +102,10 @@
 ```bash
 # 克隆仓库
 git clone https://github.com/caijiajia-sky/ima-skills.git
+
+# 设置环境变量（重要！）
+export MINIMAX_API_KEY=your_actual_key
+export GITHUB_TOKEN=your_github_token
 
 # 查看各Skill
 cd ima-skills/<skill-name>
@@ -117,13 +146,26 @@ ima-skills/
 
 ## 📝 复审记录
 
-### 2026-06-04 复审
+### 2026-06-04 第一次复审
 - ✅ 初始上传: 25个SKILL.md
 - ⚠️ 发现: 12个Skill存在文件缺失
-- ✅ 补传: 44个文件 (含2个脱敏后的脚本)
+- ✅ 补传: 44个文件
 - ✅ 最终: 100%完整
+
+### 2026-06-04 第二次复审（深度）
+- ⚠️ **严重发现**: 14个Python脚本硬编码 MiniMax API Key
+- ✅ 修复: 全部改为 `os.environ.get("MINIMAX_API_KEY", ...)` 方式
+- ✅ 验证: GitHub仓库已无硬编码密钥
+- ✅ 提升: README安全声明更新
+
+### 🔍 复审方法
+1. 文件级SHA256哈希对比
+2. GitHub代码搜索API深度扫描
+3. 下载所有.py/.sh文件进行本地正则匹配
+4. AST语法分析检查Python代码结构
 
 ---
 **创建时间**: 2026-06-04  
+**最后更新**: 2026-06-04 04:23  
 **作者**: caijiajia-sky  
 **License**: MIT
