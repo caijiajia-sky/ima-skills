@@ -79,7 +79,7 @@ minimax_understand_image({
 
 ### API 配置
 
-**API 密钥**: `sk-cp-BC0OPAa8Y5HiiKOIHZpC4WRiBF3PEeGXDl2WgAaG7mRI7WHsGXhMdQWXErRKZvrNu6gH_iH-tTMjQsozFC_akhP9VOPJSxh1gMzb-P2KchmzTXBRGjZWBbY`
+**API 密钥**: `sk-cp-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
 
 **API Host**: `https://api.minimaxi.com`（国内版）
 
