@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-MiniMax Voice Clone Script
-用于上传音频文件并克隆声音
+⚠️  安全说明: API Key 通过环境变量传入
+使用前请设置: export MINIMAX_API_KEY=your_actual_key
+或创建 .env 文件（不要提交到git）
 """
 
 import argparse
@@ -20,7 +22,7 @@ except ImportError:
 
 # API 配置
 API_HOST = "https://api.minimaxi.com"
-API_KEY = "sk-cp-BC0OPAa8Y5HiiKOIHZpC4WRiBF3PEeGXDl2WgAaG7mRI7WHsGXhMdQWXErRKZvrNu6gH_iH-tTMjQsozFC_akhP9VOPJSxh1gMzb-P2KchmzTXBRGjZWBbY"
+API_KEY = os.environ.get("MINIMAX_API_KEY", "your_api_key_here")
 
 # 默认测试文本
 DEFAULT_TEXT = "您好，这是我的声音样本，请用于克隆音色。"
