@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-MiniMax Token Plan 极速版工具集
-提供 web_search 和 understand_image 两个工具
+⚠️  安全说明: API Key 通过环境变量传入
+使用前请设置: export MINIMAX_API_KEY=your_actual_key
+或创建 .env 文件（不要提交到git）
+"""
 
-用法:
-    python3 minimax_tools.py web_search "搜索关键词"
-    python3 minimax_tools.py understand_image "分析提示词" "图片URL或路径"
-"""
 
 import os
 import sys
@@ -16,7 +15,7 @@ import urllib.request
 import urllib.error
 
 # API 配置
-API_KEY = "sk-cp-BC0OPAa8Y5HiiKOIHZpC4WRiBF3PEeGXDl2WgAaG7mRI7WHsGXhMdQWXErRKZvrNu6gH_iH-tTMjQsozFC_akhP9VOPJSxh1gMzb-P2KchmzTXBRGjZWBbY"
+API_KEY = os.environ.get("MINIMAX_API_KEY", "your_api_key_here")
 API_HOST = "https://api.minimaxi.com"
 
 
