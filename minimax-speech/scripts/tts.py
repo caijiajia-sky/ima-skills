@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-MiniMax 语音合成 Skill
-使用 MiniMax Token Plan API 进行文本转语音
+⚠️  安全说明: API Key 通过环境变量传入
+使用前请设置: export MINIMAX_API_KEY=your_actual_key
+或创建 .env 文件（不要提交到git）
+"""
 
-用法:
-    python tts.py "要转换的文本"
-    python tts.py "文本" --voice female-tianmei --speed 1.0 --output speech.mp3
-"""
 
 import json
 import urllib.request
@@ -19,7 +18,7 @@ import time
 import threading
 
 # ============== 配置 ==============
-API_KEY = "sk-cp-BC0OPAa8Y5HiiKOIHZpC4WRiBF3PEeGXDl2WgAaG7mRI7WHsGXhMdQWXErRKZvrNu6gH_iH-tTMjQsozFC_akhP9VOPJSxh1gMzb-P2KchmzTXBRGjZWBbY"
+API_KEY = os.environ.get("MINIMAX_API_KEY", "your_api_key_here")
 API_HOST = "https://api.minimaxi.com"
 
 # 同步接口（短文本 ≤500字符）
