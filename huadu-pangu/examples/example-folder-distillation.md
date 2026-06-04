@@ -37,10 +37,10 @@ wolai公式助手知识库包含：
 
 ```
 wolai-formula-helper/
-├── SKILL.md                ← 核心技能文件
-└── references/
-    ├── date-functions.md   ← 日期函数详细说明
-    └── logic-functions.md  ← 逻辑函数详细说明
+|---- SKILL.md                ← 核心技能文件
+|----- references/
+    |---- date-functions.md   ← 日期函数详细说明
+    |----- logic-functions.md  ← 逻辑函数详细说明
 ```
 
 ### SKILL.md 内容
