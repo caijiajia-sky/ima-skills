@@ -51,15 +51,15 @@
 
 ```
 contract-review/
-├── SKILL.md                ← 核心技能文件
-├── references/
-│   ├── risk-checklist.md   ← 详细风险检查清单（从知识库提炼）
-│   ├── four-layer-method.md ← 四层检查法详细说明
-│   └── case-studies.md    ← 典型案例分析（从知识库提炼）
-├── assets/
-│   └── review-report-template.md ← 审查报告模板
-└── examples/
-    └── example-review.md  ← 审查示例
+|---- SKILL.md                ← 核心技能文件
+|---- references/
+|   |---- risk-checklist.md   ← 详细风险检查清单（从知识库提炼）
+|   |---- four-layer-method.md ← 四层检查法详细说明
+|   |----- case-studies.md    ← 典型案例分析（从知识库提炼）
+|---- assets/
+|   |----- review-report-template.md ← 审查报告模板
+|----- examples/
+    |----- example-review.md  ← 审查示例
 ```
 
 ### SKILL.md 内容
