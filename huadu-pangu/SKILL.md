@@ -126,15 +126,15 @@ trigger: 蒸馏知识库,知识库转skill,把知识库变成skill,distill kb,kb
 
 ```
 {skill-name}/
-├── SKILL.md                          # 核心技能文件
-├── references/                       # 参考文档（从知识库提炼）
-│   ├── 01-core-knowledge.md         # 核心知识提炼
-│   ├── 02-checklist.md             # 检查清单（如有）
-│   └── 03-cases.md                 # 案例库（如有）
-├── assets/                          # 模板文件（从知识库提取）
-│   └── {template}.md
-└── examples/                        # 使用示例
-    └── {example}.md
+|---- SKILL.md                          # 核心技能文件
+|---- references/                       # 参考文档（从知识库提炼）
+|   |---- 01-core-knowledge.md         # 核心知识提炼
+|   |---- 02-checklist.md             # 检查清单（如有）
+|   |----- 03-cases.md                 # 案例库（如有）
+|---- assets/                          # 模板文件（从知识库提取）
+|   |----- {template}.md
+|----- examples/                        # 使用示例
+    |----- {example}.md
 ```
 
 **完成检查**（自动执行）：
@@ -208,18 +208,18 @@ trigger: 蒸馏知识库,知识库转skill,把知识库变成skill,distill kb,kb
 **内容读取和分析完成后，暂停展示分析摘要**：
 
 ```
-┌──────────────────┬────────────┬──────────────────────────────┐
-│ 分析维度         │ 数量       │ 关键发现                      │
-├──────────────────┼────────────┼──────────────────────────────┤
-│ 核心概念         │ N个        │ {概念1}、{概念2}...           │
-│ 流程步骤         │ N步        │ {步骤1}→{步骤2}→...          │
-│ 规则/规范        │ N条        │ {规则1}、{规则2}...          │
-│ 典型案例         │ N个        │ {案例1}、{案例2}...          │
-│ 模板/文档        │ N个        │ {模板1}、{模板2}...          │
-├──────────────────┼────────────┼──────────────────────────────┤
-│ 建议的Skill类型  │ {类型}     │ {判断理由}                    │
-│ 预计难度         │ 低/中/高   │ {原因}                        │
-└──────────────────┴────────────┴──────────────────────────────┘
++------------------------------------------------------------------------+
+| 分析维度         | 数量       | 关键发现                      |
+|---------------------+--------------+---------------------------------|
+| 核心概念         | N个        | {概念1}、{概念2}...           |
+| 流程步骤         | N步        | {步骤1}→{步骤2}→...          |
+| 规则/规范        | N条        | {规则1}、{规则2}...          |
+| 典型案例         | N个        | {案例1}、{案例2}...          |
+| 模板/文档        | N个        | {模板1}、{模板2}...          |
+|---------------------+--------------+---------------------------------|
+| 建议的Skill类型  | {类型}     | {判断理由}                    |
+| 预计难度         | 低/中/高   | {原因}                        |
+|------------------------------------------------------------------------+
 ```
 
 用户确认分析结果 OK → 进入 Phase 3。
@@ -623,14 +623,14 @@ Phase 5 验证通过后，可选启动双Agent精炼：
 **输出目录结构**：
 ```
 contract-review/
-├── SKILL.md
-├── references/
-│   ├── 01-core-knowledge.md
-│   └── 02-risk-checklist.md
-├── assets/
-│   └── review-template.md
-└── examples/
-    └── example-review.md
+|---- SKILL.md
+|---- references/
+|   |---- 01-core-knowledge.md
+|   |----- 02-risk-checklist.md
+|---- assets/
+|   |----- review-template.md
+|----- examples/
+    |----- example-review.md
 ```
 
 ### 示例2：文件夹蒸馏
@@ -648,12 +648,12 @@ contract-review/
 **输出目录结构**：
 ```
 wolai-formula-helper/
-├── SKILL.md
-├── references/
-│   ├── 01-date-functions.md
-│   └── 02-logic-functions.md
-└── examples/
-    └── example-formulas.md
+|---- SKILL.md
+|---- references/
+|   |---- 01-date-functions.md
+|   |----- 02-logic-functions.md
+|----- examples/
+    |----- example-formulas.md
 ```
 
 ### 示例3：单文档蒸馏
@@ -671,11 +671,11 @@ wolai-formula-helper/
 **输出目录结构**：
 ```
 project-launch-checker/
-├── SKILL.md
-├── assets/
-│   └── checklist-template.md
-└── examples/
-    └── example-checklist.md
+|---- SKILL.md
+|---- assets/
+|   |----- checklist-template.md
+|----- examples/
+    |----- example-checklist.md
 ```
 
 ---
