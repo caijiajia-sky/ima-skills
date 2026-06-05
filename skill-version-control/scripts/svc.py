@@ -176,67 +176,85 @@ def step2_register_to_platform(name: str) -> dict:
         return {"status": "unknown", "raw": out}
 
 
+def github_api_upload_file(repo: str, path: str, content: bytes, message: str, branch: str = "main", token: str = "") -> dict:
+    """通过 GitHub Contents API 上传单个文件（比 git push 更稳定）"""
+    import base64
+    if not token:
+        return {"status": "fail", "error": "no token"}
+    url = f"https://api.github.com/repos/{repo}/contents/{path}"
+    payload = {
+        "message": message,
+        "content": base64.b64encode(content).decode("utf-8"),
+        "branch": branch,
+    }
+    try:
+        r = subprocess.run(
+            ["curl", "-s", "-X", "PUT", url,
+             "-H", f"Authorization: token {token}",
+             "-H", "Content-Type: application/json",
+             "-d", json.dumps(payload)],
+            capture_output=True, text=True, timeout=30,
+        )
+        result = json.loads(r.stdout)
+        if "content" in result:
+            return {"status": "ok", "sha": result["content"]["sha"], "commit": result["commit"]["sha"][:10]}
+        return {"status": "fail", "error": result.get("message", r.stdout[:200])}
+    except Exception as e:
+        return {"status": "fail", "error": str(e)}
+
+
 def step3_sync_to_github(name: str, commit_msg: str = None) -> dict:
-    """Step 3: 同步到 GitHub 仓库"""
+    """Step 3: 同步到 GitHub 仓库（GitHub Contents API 优先，git push 兜底）"""
     print(f"\n🐙 Step 3: 同步到 GitHub [{GITHUB_REPO}]")
     src = Path(LOCAL_SKILLS_DIR) / name
     if not src.exists():
         err(f"本地目录不存在: {src}")
         return {"status": "fail", "error": "local not found"}
 
-    # 初始化本地镜像（如果不存在）
-    if not Path(GITHUB_LOCAL_PATH).exists():
-        info("初始化 GitHub 镜像...")
-        Path(GITHUB_LOCAL_PATH).parent.mkdir(parents=True, exist_ok=True)
-        # 优先用带 Token 的 URL 克隆（解决权限问题）
-        token = os.environ.get("GITHUB_TOKEN", "")
-        if token:
-            clone_url = f"https://{token}@github.com/{GITHUB_REPO}.git"
-        else:
-            clone_url = f"https://github.com/{GITHUB_REPO}.git"
-        rc, _, stderr = run(f"git clone {clone_url} {GITHUB_LOCAL_PATH}")
-        if rc != 0:
-            # 网络/认证失败时降级为本地 git，不阻断流程
-            warn(f"克隆失败（{stderr[:100]}），降级为本地 git 仓库记录")
-            if not Path(GITHUB_LOCAL_PATH).exists():
-                run(f"mkdir -p {GITHUB_LOCAL_PATH}")
-                run(f"cd {GITHUB_LOCAL_PATH} && git init -q && git config user.email 'sky@ima.local' && git config user.name 'Sky'")
-            return {"status": "degraded", "note": "github 不可达，仅本地 git 记录"}
-        ok(f"克隆成功: {GITHUB_REPO}")
+    token = os.environ.get("GITHUB_TOKEN", "")
+    if not token:
+        warn("GITHUB_TOKEN 未设置，跳过 GitHub 同步（其他同步步骤继续）")
+        return {"status": "skipped", "reason": "no token"}
 
-    # 拷贝技能目录到镜像
-    dst = Path(GITHUB_LOCAL_PATH) / name
-    if dst.exists():
-        shutil.rmtree(dst)
-    shutil.copytree(src, dst)
-    ok(f"复制 {src} → {dst}")
-
-    # git add + commit + push
     msg = commit_msg or f"sync: {name} @ {datetime.now().strftime('%Y-%m-%d %H:%M')}"
-    # 清理 Python 缓存 + 添加 .gitignore
-    (Path(GITHUB_LOCAL_PATH) / ".gitignore").write_text(
-        "__pycache__/\n*.pyc\n*.pyo\n.DS_Store\n.sync-registry.json\n", encoding="utf-8"
-    )
-    # 删除已存在的 __pycache__
-    for cache_dir in Path(GITHUB_LOCAL_PATH).rglob("__pycache__"):
-        shutil.rmtree(cache_dir)
-    rc, out, stderr = run(f"cd {GITHUB_LOCAL_PATH} && git rm -r --cached --quiet '**/__pycache__' 2>/dev/null; git add {name}/ .gitignore && git commit -m '{msg}'")
-    if "nothing to commit" in (out + stderr):
-        info("无变更，跳过 commit")
-        return {"status": "no-change"}
-    if rc != 0:
-        err(f"commit 失败: {stderr}")
-        return {"status": "fail", "error": stderr}
+    uploaded = 0
+    failed = []
 
-    # 智能检测当前分支名（main vs master）
-    rc_branch, branch_out, _ = run(f"cd {GITHUB_LOCAL_PATH} && git branch --show-current")
-    current_branch = branch_out.strip() or "main"
-    rc, out, stderr = run(f"cd {GITHUB_LOCAL_PATH} && git push origin {current_branch} 2>&1")
-    if rc != 0:
-        warn(f"push 失败（{stderr[:200]}），仅本地 commit 成功")
-        return {"status": "local-only", "commit": out, "branch": current_branch}
-    ok(f"推送成功 ({current_branch}): {out[:100]}")
-    return {"status": "ok", "commit": out, "branch": current_branch}
+    # 收集所有非 __pycache__ 文件
+    files = []
+    for p in src.rglob("*"):
+        if p.is_file() and "__pycache__" not in str(p) and not p.name.startswith("."):
+            rel = p.relative_to(src)
+            files.append((p, str(rel)))
+
+    info(f"准备上传 {len(files)} 个文件（GitHub Contents API）")
+    for src_path, rel_path in files:
+        result = github_api_upload_file(
+            repo=GITHUB_REPO,
+            path=f"{name}/{rel_path}",
+            content=src_path.read_bytes(),
+            message=msg,
+            branch="main",
+            token=token,
+        )
+        if result["status"] == "ok":
+            uploaded += 1
+        else:
+            failed.append((rel_path, result.get("error", "")))
+
+    if not failed:
+        ok(f"全部上传成功: {uploaded} 个文件")
+        return {"status": "ok", "uploaded": uploaded, "method": "api"}
+    elif uploaded > 0:
+        warn(f"部分失败: {uploaded} 成功 / {len(failed)} 失败")
+        for f, e in failed[:5]:
+            err(f"  {f}: {e[:100]}")
+        return {"status": "partial", "uploaded": uploaded, "failed": failed, "method": "api"}
+    else:
+        err(f"全部失败（{len(failed)} 个）")
+        for f, e in failed[:5]:
+            err(f"  {f}: {e[:100]}")
+        return {"status": "fail", "failed": failed, "method": "api"}
 
 
 def step4_sync_to_kb(name: str) -> dict:
